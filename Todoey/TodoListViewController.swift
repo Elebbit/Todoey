@@ -10,11 +10,17 @@ import UIKit
 
 class TodoListViewController: UITableViewController {
     
-    var itemArray = ["Find Mac", "Find Job", "Study Swift"]
+    var itemArray = [String]()
+    
+    let defaults = UserDefaults.standard
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        if let items  = self.defaults.array(forKey: "ToDoListArray") as? [String] {
+            self.itemArray = items
+        }
     }
     
     //MARK - TableView Datasource Methods
@@ -25,7 +31,7 @@ class TodoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TodoItemCell", for: indexPath)
         
-        cell.textLabel?.text = itemArray[indexPath.row]
+        cell.textLabel?.text = self.itemArray[indexPath.row]
         
         return cell
     }
@@ -62,6 +68,7 @@ class TodoListViewController: UITableViewController {
             (action) in
             self.itemArray.append(textField.text!)
             
+            self.defaults.set(self.itemArray, forKey: "ToDoListArray")
             self.tableView.reloadData()
         }
         
